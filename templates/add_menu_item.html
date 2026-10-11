@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>เพิ่มเมนูใหม่</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f3f6fb; margin: 0; }
+        .container { max-width: 600px; margin: 60px auto; background: white; border-radius: 12px; box-shadow: 0 4px 18px rgba(0,0,0,0.08); padding: 30px; }
+        input, select, button { width: 100%; padding: 10px; margin-top: 8px; margin-bottom: 16px; border-radius: 8px; border: 1px solid #ccc; }
+        button { background: #2d6cdf; color: white; border: none; cursor: pointer; }
+        a { color: #2d6cdf; text-decoration: none; }
+        .hint { display: block; color: #6b7280; margin-top: -10px; margin-bottom: 16px; font-size: 13px; }
+        .error { background: #fff0ee; border: 1px solid #f2b6ae; border-radius: 8px; color: #b42318; padding: 10px 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>เพิ่มเมนูใหม่</h1>
+        {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+        <form method="POST">
+            <label>ชื่อเมนู</label>
+            <input type="text" name="name" value="{{ form.get('name', '') }}" required />
+
+            <label>ประเภท</label>
+            <select name="category">
+                <option value="อาหารจานเดียว">อาหารจานเดียว</option>
+                <option value="เส้น">เส้น</option>
+                <option value="เครื่องดื่ม">เครื่องดื่ม</option>
+                <option value="ของทานเล่น">ของทานเล่น</option>
+            </select>
+
+            <label>ราคา (บาท)</label>
+            <input type="number" name="price" value="{{ form.get('price', '') }}" min="0.01" step="0.01" required />
+
+            <label for="image_url">ลิงก์รูปอาหาร</label>
+            <input type="url" id="image_url" name="image_url" value="{{ form.get('image_url', '') }}" placeholder="https://example.com/food.jpg" />
+            <small class="hint">ใส่ URL รูปภาพโดยตรงที่ขึ้นต้นด้วย http:// หรือ https:// เว้นว่างได้</small>
+
+            <button type="submit">บันทึกเมนู</button>
+        </form>
+        <a href="/admin">กลับหน้า Admin</a>
+    </div>
+</body>
+</html>

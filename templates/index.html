@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>เมนูอาหารตามสั่ง | ตามสั่ง.py</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --red: #e43d2b;
+            --red-dark: #c92f22;
+            --cream: #fff9f0;
+            --ink: #29251f;
+            --muted: #777066;
+            --line: #eee6db;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: "Leelawadee UI", "Noto Sans Thai", Tahoma, sans-serif;
+        }
+        a { color: inherit; text-decoration: none; }
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            height: 58px;
+            background: var(--red);
+            color: white;
+            box-shadow: 0 2px 9px #7f241c30;
+        }
+        .nav {
+            width: min(1180px, calc(100% - 36px));
+            height: 100%;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .brand { font-size: 18px; font-weight: 800; letter-spacing: -.3px; }
+        .brand-mark { margin-right: 7px; }
+        .nav-links { display: flex; align-items: center; gap: 25px; font-size: 14px; font-weight: 700; }
+        .nav-links a { opacity: .94; transition: opacity .15s; }
+        .nav-links a:hover { opacity: .72; }
+        .cart-count {
+            display: inline-grid;
+            place-items: center;
+            min-width: 19px;
+            height: 19px;
+            margin-left: 4px;
+            padding: 0 5px;
+            border-radius: 20px;
+            background: white;
+            color: var(--red);
+            font-size: 11px;
+        }
+        main { width: min(900px, calc(100% - 36px)); margin: 34px auto 60px; }
+        .intro { margin-bottom: 24px; }
+        h1 { margin: 0 0 3px; font-size: 25px; line-height: 1.4; }
+        .subtitle { margin: 0; color: var(--muted); font-size: 14px; }
+        .section-title { margin: 23px 0 10px; color: var(--red-dark); font-size: 17px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+        .food-card {
+            overflow: hidden;
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            background: #fff;
+            box-shadow: 0 2px 7px #5b3c1b0c;
+            transition: transform .15s, box-shadow .15s;
+        }
+        .food-card:hover { transform: translateY(-2px); box-shadow: 0 7px 18px #5b3c1b18; }
+        .food-photo {
+            display: grid;
+            height: 105px;
+            overflow: hidden;
+            place-items: center;
+            background: linear-gradient(135deg, #f5c787, #e88955);
+            color: #fff;
+            font-size: 48px;
+        }
+        .food-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .food-info { padding: 10px 11px 11px; }
+        .food-name { min-height: 22px; margin: 0 0 3px; overflow-wrap: anywhere; font-size: 14px; font-weight: 750; }
+        .food-price { margin: 0 0 7px; color: var(--red); font-size: 15px; font-weight: 800; }
+        .tags { display: flex; flex-wrap: wrap; gap: 4px; min-height: 42px; align-content: flex-start; margin-bottom: 8px; }
+        .tag {
+            padding: 2px 7px;
+            border: 1px solid #eee7dc;
+            border-radius: 5px;
+            background: #faf7f1;
+            color: #736c62;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .add-form { display: flex; gap: 5px; }
+        .quantity {
+            width: 42px;
+            min-width: 0;
+            padding: 6px 4px;
+            border: 1px solid #e6dfd5;
+            border-radius: 6px;
+            text-align: center;
+            font: inherit;
+        }
+        .add-button, .checkout-button {
+            border: 0;
+            border-radius: 7px;
+            background: var(--red);
+            color: white;
+            cursor: pointer;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 750;
+            transition: background .15s;
+        }
+        .add-button { flex: 1; padding: 7px 6px; white-space: nowrap; }
+        .add-button:hover, .checkout-button:hover { background: var(--red-dark); }
+        #cart { scroll-margin-top: 75px; margin-top: 30px; }
+        .cart-panel {
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            background: #fff;
+            box-shadow: 0 2px 7px #5b3c1b0c;
+        }
+        .cart-heading { display: flex; align-items: center; justify-content: space-between; }
+        .cart-heading h2 { margin: 0; font-size: 19px; }
+        .cart-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid #f1ece5; font-size: 14px; }
+        .cart-total { display: flex; justify-content: space-between; margin: 14px 0; font-size: 16px; }
+        .checkout-form { display: flex; gap: 9px; align-items: center; }
+        .customer-name {
+            flex: 1;
+            min-width: 0;
+            padding: 10px 12px;
+            border: 1px solid #e6dfd5;
+            border-radius: 7px;
+            font: inherit;
+        }
+        .checkout-button { padding: 11px 18px; font-size: 14px; }
+        .empty-cart { margin: 14px 0 2px; color: var(--muted); font-size: 14px; }
+        @media (max-width: 760px) {
+            main { width: min(620px, calc(100% - 28px)); margin-top: 26px; }
+            .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+            .food-photo { height: 125px; }
+            .nav { width: calc(100% - 24px); }
+            .nav-links { gap: 13px; font-size: 12px; }
+        }
+        @media (max-width: 420px) {
+            .brand { font-size: 15px; }
+            .nav-links { gap: 9px; font-size: 11px; }
+            .food-photo { height: 100px; }
+            .checkout-form { align-items: stretch; flex-direction: column; }
+            .checkout-button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <nav class="nav" aria-label="เมนูหลัก">
+            <a class="brand" href="/"><span class="brand-mark">🍳</span>ตามสั่ง.py</a>
+            <div class="nav-links">
+                <a href="#menu">สั่งอาหาร</a>
+                <a href="#cart">ตะกร้า <span class="cart-count">{{ cart_items|sum(attribute="quantity") }}</span></a>
+                <a href="/admin">หลังบ้าน</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="intro" id="menu">
+            <h1>เมนูอาหารตามสั่ง</h1>
+            <p class="subtitle">เลือกเมนูที่ต้องการ แล้วกด “เพิ่มลงตะกร้า”</p>
+        </section>
+
+        <h2 class="section-title">เมนูแนะนำ</h2>
+        <section class="menu-grid" aria-label="รายการอาหาร">
+            {% set food_images = [
+                "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=700&q=80",
+                "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=700&q=80",
+                "https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&w=700&q=80",
+                "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=700&q=80",
+                "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=700&q=80",
+                "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=700&q=80",
+                "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=700&q=80"
+            ] %}
+            {% for food in menu %}
+                <article class="food-card">
+                    <div class="food-photo">
+                        <img
+                            src="{{ food.image_url or food_images[(food.food_id - 1) % (food_images|length)] }}"
+                            alt="{{ food.name }}"
+                            loading="lazy"
+                            onerror="this.style.display='none'; this.parentElement.textContent='🍛';"
+                        />
+                    </div>
+                    <div class="food-info">
+                        <h3 class="food-name">{{ food.name }}</h3>
+                        <p class="food-price">{{ "%.0f"|format(food.price) }} บาท</p>
+                        <div class="tags">
+                            <span class="tag">{{ food.category }}</span>
+                            <span class="tag">ทำสดใหม่</span>
+                        </div>
+                        <form class="add-form" method="POST" action="/add_to_cart">
+                            <input type="hidden" name="food_id" value="{{ food.food_id }}" />
+                            <input class="quantity" type="number" name="quantity" min="1" value="1" aria-label="จำนวน {{ food.name }}" />
+                            <button class="add-button" type="submit">เพิ่มลงตะกร้า</button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+
+        <section id="cart">
+            <div class="cart-panel">
+                <div class="cart-heading">
+                    <h2>ตะกร้าของคุณ</h2>
+                    <span class="tag">{{ cart_items|sum(attribute="quantity") }} รายการ</span>
+                </div>
+                {% if cart_items %}
+                    {% for item in cart_items %}
+                        <div class="cart-row">
+                            <span>{{ item.name }} × {{ item.quantity }}</span>
+                            <strong>{{ "%.2f"|format(item.subtotal) }} บาท</strong>
+                        </div>
+                    {% endfor %}
+                    <div class="cart-total">
+                        <strong>ยอดรวม</strong>
+                        <strong>{{ "%.2f"|format(total) }} บาท</strong>
+                    </div>
+                    <form class="checkout-form" method="POST" action="/checkout">
+                        <input class="customer-name" type="text" name="customer_name" placeholder="ชื่อลูกค้า (ไม่บังคับ)" aria-label="ชื่อลูกค้า" />
+                        <button class="checkout-button" type="submit">ยืนยันคำสั่งซื้อ</button>
+                    </form>
+                {% else %}
+                    <p class="empty-cart">ยังไม่มีสินค้าในตะกร้า — เลือกเมนูที่ชอบได้เลย</p>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>
