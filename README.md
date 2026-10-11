@@ -61,9 +61,4 @@ python init_demo_data.py
 - **Properties:** ใช้ `subtotal` และ `total` คำนวณยอดโดยไม่เก็บค่าซ้ำ
 - **Methods:** แยกหน้าที่ เช่น `show()`, `add_item()` และ `show_receipt()`
 
-## แหล่งอ้างอิง
-- ตัวอย่าง repository: https://github.com/MojiNoSoCute/order_food_py
-- Python Classes (W3Schools): https://www.w3schools.com/python/python_classes.asp
-- Python Inheritance (W3Schools): https://www.w3schools.com/python/python_inheritance.asp
-
 > หมายเหตุ: เป็นโปรแกรมตัวอย่างที่ทำงานผ่าน Terminal/Console ยังไม่ได้เชื่อมฐานข้อมูล ระบบชำระเงิน หรือหน้าร้านบนเว็บไซต์
